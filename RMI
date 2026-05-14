@@ -1,0 +1,61 @@
+MyRemoteClass.java
+public class MyRemoteClass extends java.rmi.server.UnicastRemoteObject 
+        implements MyInterface {
+
+    public MyRemoteClass() throws java.rmi.RemoteException {
+        super();
+    }
+
+    public String sayHello() throws java.rmi.RemoteException {
+        return "Hello, world!";
+    }
+}
+MyInterface.java
+public interface MyInterface extends java.rmi.Remote {
+
+    public String sayHello() throws java.rmi.RemoteException;
+}
+
+MyClient.java
+public class MyClient {
+
+    public static void main(String[] args) {
+
+        try {
+            MyInterface obj = (MyInterface)
+                    java.rmi.Naming.lookup("//localhost/MyRemoteClass");
+
+            System.out.println(obj.sayHello());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+MyServer.java
+public class MyServer {
+
+    public static void main(String[] args) {
+
+        try {
+            MyInterface obj = new MyRemoteClass();
+
+            java.rmi.registry.LocateRegistry.createRegistry(1099);
+
+            java.rmi.Naming.rebind("//localhost/MyRemoteClass", obj);
+
+            System.out.println("MyRemoteClass bound in registry");
+
+        } catch (Exception e) {
+
+            System.err.println("MyRemoteClass exception:");
+            e.printStackTrace();
+        }
+    }
+}
+
+javac *.java
+rmiregistry
+server
+client
+
